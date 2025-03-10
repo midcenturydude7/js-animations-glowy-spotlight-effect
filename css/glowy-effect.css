@@ -11,30 +11,46 @@
 
   .card {
     --border-width: 6px;
-    --alpha: 0.15;
+    --bg: hsl(0 0% 10%);
+    /* --alpha: calc(var(--active, 0) * 0.15);
     --spotlight: radial-gradient(
       circle at calc(var(--x) * 1px) calc(var(--y) * 1px),
       hsl(0 0% 100% / var(--alpha)),
       transparent 150px
-    );
+    ); */
     position: relative;
     width: 200px;
     aspect-ratio: 4 / 3;
     color: hsl(0 0% 100%);
     font-weight: bold;
     font-family: sofia-pro, sans-serif;
-    background: var(--spotlight), hsl(0 0% 10%);
-    background-attachment: fixed;
+    background: var(--bg);
   }
 
+  .card:is(:hover, :focus) {
+    --active: 1;
+  }
+
+  .card::after,
   .card::before {
     --alpha: 0.5;
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--spotlight);
-    background-attachment: fixed;
+    pointer-events: none;
+    /* background: var(--spotlight);
+    background-attachment: fixed; */
     /* mix-blend-mode: overlay; */
+  }
+
+  .card::after {
+    --alpha: 0.15;
+    opacity: var(--active, 0);
+    transition: opacity 0.2s;
+  }
+
+  .card::before {
+    --alpha: 0.5;
     mask: linear-gradient(#fff, #fff) 50% 0 / 100% var(--border-width) no-repeat,
       linear-gradient(#fff, #fff) 100% 0 / var(--border-width) 100% no-repeat,
       linear-gradient(#fff, #fff) 50% 100% / 100% var(--border-width) no-repeat,
@@ -42,8 +58,19 @@
     mask-repeat: no-repeat;
   }
 
+  .card::after,
+  .card::before {
+    background: radial-gradient(
+      circle at calc(var(--x) * 1px) calc(var(--y) * 1px),
+      hsl(0 0% 100% / var(--alpha)),
+      transparent 150px
+    );
+    background-attachment: fixed;
+  }
+
   .card span {
     position: absolute;
+    font-size: 2rem;
     bottom: 1rem;
     right: 1rem;
   }
